@@ -41,6 +41,13 @@ template "#{home_dir}/server/server.properties" do
   notifies :start, "minecraft_server[main]"
 end
 
+template "#{home_dir}/server/ops.txt" do
+  owner username
+  mode 0700
+
+  notifies :start, "minecraft_server[main]"
+end
+
 minecraft_server "main" do
   action [:start]
 end

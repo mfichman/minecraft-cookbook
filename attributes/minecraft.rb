@@ -1,4 +1,5 @@
 default.minecraft.user = "minecraft"
+default.minecraft.ops = []
 
 default.minecraft.options.generator_settings = ""
 default.minecraft.options.allow_nether = true
