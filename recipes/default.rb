@@ -8,6 +8,18 @@ package "openjdk-7-jre" do
   action :install
 end
 
+package "screen" do
+  action :install
+end
+
+package "python-pip" do
+  action :install
+end
+
+python_pip "tinys3" do
+  action :install
+end
+
 username = node[:minecraft][:user]
 home_dir = "/home/#{username}"
 
@@ -34,20 +46,33 @@ file "#{home_dir}/server/eula.txt" do
     content "eula=true\n"
 end
 
-template "#{home_dir}/server/server.properties" do
-  owner username
-  mode 0700
-
-  notifies :start, "minecraft_server[main]"
-end
-
 template "#{home_dir}/server/ops.txt" do
   owner username
   mode 0700
+end
 
+template "#{home_dir}/server/minecraft-s3.py" do
+  owner username
+  mode 0700
+end
+
+template "#{home_dir}/server/server.properties" do
+  owner username
+  mode 0700
   notifies :start, "minecraft_server[main]"
+end
+
+file "/root/.bashrc" do
+  owner "root"
+  content <<-EOH
+  export S3_ACCESS_KEY=#{node[:s3][:access_key]}
+  export S3_SECRET_KEY=#{node[:s3][:secret_key]}
+  EOH
 end
 
 minecraft_server "main" do
   action [:start]
 end
+
+#iptables_rule "minecraft.rule"
+
